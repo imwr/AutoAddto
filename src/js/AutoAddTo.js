@@ -7,6 +7,8 @@
     "use strict";
     var defaults = {
         data: [],//匹配的数据数组
+        sourceUrl: null,//异步请求数据url，不为空时data无效
+        cache: true,//异步请求的数据是否缓存
         result: true,//是否显示结果数等信息
         noReturnText: "no result",//没有找到结果时文字
         returnTemplete: null//自定义返回模板
@@ -17,10 +19,13 @@
             new AutoAddto($(this), opts);
         });
     };
+    $.fn.autoAddto.setData = function (array) {
+        console.log(array);
+    };
     function AutoAddto(input, options) {
-        var index = -1, dataArray = options.data, autoResult, autoDiv, autoUl;
+        var index = -1, dataArray = options.data, cacheData;
+        var autoResult, autoDiv, autoUl;
         _init();
-        _addEvent();
 
         function _init() {
             if (!input || input.length == 0) return;
@@ -37,10 +42,11 @@
                 autoResult = $("<div class='auto-addto-result'></div>");
                 autoDiv.append(autoResult);
             }
-            if (!dataArray || dataArray.length == 0) {
+            if (!options.sourceUrl && (!dataArray || dataArray.length == 0)) {
+                console.log("no data");
                 return;
             }
-            dataArray.sort();
+            _addEvent();
         }
 
         function _addEvent() {
@@ -57,107 +63,111 @@
                     return
                 }
                 ( value === "." || value === "\\" || value === "*") && (value = "\\" + value);
-                _search(value);
+                if (options.sourceUrl) {
+                    sendRequest(value, _search);
+                } else {
+                    _search(value, dataArray);
+                }
             });
         }
 
-        function _search(search_value) {
+        function _search(search_value, array) {
             var reg = new RegExp("(" + search_value + ")", "i");
             var addto_index = 0, lis = document.createDocumentFragment();
-            for (var i = 0; i < dataArray.length; i++) {
-                var data = dataArray[i];
-                var value = search_value, ischinese = false;
-                //如果输入的是英文，而待匹配数据是中文，匹配其拼音首字母
-                if (isEn(value) && isChinese(data)) {
-                    data = firstPy(data);
-                    ischinese = true;
+            if (array && array.length > 0) {
+                for (var i = 0; i < array.length; i++) {
+                    var data = array[i];
+                    var value = search_value, ischinese = false;
+                    //如果输入的是英文，而待匹配数据是中文，匹配其拼音首字母
+                    if (isEn(value) && isChinese(data)) {
+                        data = firstPy(data);
+                        ischinese = true;
+                    }
+                    if (reg.test(data)) {
+                        ischinese && (value = array[i].substring(data.indexOf(value), data.indexOf(value) + value.length));
+                        var div = document.createElement("li");
+                        div.className = addto_index % 2 == 0 ? "auto-addto-item item-even" : "auto-addto-item item-odd";
+                        div.innerHTML = _returnTemplete(array[i], value);
+                        lis.appendChild(div) && addto_index++;
+                    }
                 }
-                if (reg.test(data)) {
-                    ischinese && (value = dataArray[i].substring(data.indexOf(value), data.indexOf(value) + value.length));
-                    var div = document.createElement("li");
-                    div.className = addto_index % 2 == 0 ? "auto-addto-item item-even" : "auto-addto-item item-odd";
-                    div.innerHTML = _returnTemplete(dataArray[i], value);//搜索到的字符粗体显示
-                    lis.appendChild(div) && addto_index++;
-                }
+                autoUl.empty()[0].appendChild(lis);
             }
-            autoUl.empty()[0].appendChild(lis);
             if (options.result) {
-                if (addto_index == 0) {
-                    autoResult.html(options.noReturnText)
-                } else {
-                    autoResult.html("* 找到 " + addto_index + " 条数据 *");
-                }
+                autoResult.html(addto_index == 0 ? options.noReturnText : "* 找到 " + addto_index + " 条数据 *");
                 autoDiv.show();
             } else {
-                addto_index > 0 ? (autoDiv.show()) : autoDiv.hide();
+                addto_index > 0 ? autoDiv.show() : autoDiv.hide() && autoUl.empty();
             }
+        }
+
+        function _cacheData(key, value) {
+            cacheData || (cacheData = {});
+            return value !== undefined ? cacheData[key] = value : cacheData[key];
+        }
+
+        function sendRequest(query, callback) {
+            var cdata;
+            if (options.cache && (cdata = _cacheData(query))) {
+                callback(query, cdata);
+                return;
+            }
+            // 替换url后第一个参数的连接符?&或&为?
+            var url = (options.sourceUrl + '&param=' + encodeURIComponent(query));
+            url = url.replace(/[&?]{1,2}/, '?');
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonp: "callback",
+                success: function (data) {
+                    callback(query, data);
+                    options.cache && _cacheData(query, data);
+                },
+                error: function () {
+                    callback(query, null);
+                }
+            });
         }
 
         function _returnTemplete(dataValue, value) {
             if (options.returnTemplete) {
                 return options.returnTemplete(dataValue, value) || 0;
             }
-            return dataValue.replace(value, "<span style='color:blue;font-weight: bold'>" + value + "</span>");
+            return dataValue.replace(new RegExp("(" + value + ")", "i"), "<span style='color:blue;font-weight: bold'>" + value + "</span>");
         }
 
-        //设置值
-        function _setValue(index) {
-            var value = "";
-            $("li.auto-addto-item", autoUl).each(function (item, i) {
+        function _setValue(items, index) {
+            items.each(function (i, item) {
                 if (i == index) {
                     $(item).addClass("active");
-                    value = $(item).text();
+                    input.val($(item).text());
                 } else {
                     $(item).removeClass("active");
                 }
             });
-            input.val(value);
         }
 
         function _pressKey(event) {
-            var length = $("li.auto-addto-item", autoDiv).length;
+            var items = $(".auto-addto-item", autoDiv), length = items.length;
+            if (length == 0) return;
             if (event.keyCode == 40) { //"↓"
                 index++;
                 if (index >= length) {
                     index = 0;
-                } else if (index == length) {
-                    input.val(search_value);
                 }
-                _setValue(index);
+                _setValue(items, index);
             } else if (event.keyCode == 38) { //↑"
                 index--;
                 if (index < 0) {
                     index = length - 1;
-                } else if (index == 0) {
-                    input.val(search_value);
                 }
-                _setValue(index);
+                _setValue(items, index)
             } else if (event.keyCode == 13) {  //回车键
                 index = -1;
-                autoDiv.hide();
+                autoDiv.hide() && autoUl.empty();
             } else {
                 index = -1;
             }
-        }
-
-        function fullPy(l1) {
-            var l2 = l1.length;
-            var I1 = "";
-            var reg = new RegExp('[a-zA-Z0-9\- ]');
-            for (var i = 0; i < l2; i++) {
-                var val = l1.substr(i, 1);
-                var name = _arraySearch(val, py);
-                if (reg.test(val)) {
-                    I1 += val;
-                } else if (name !== false) {
-                    I1 += name;
-                }
-            }
-            I1 = I1.replace(/ /g, '-');
-            while (I1.indexOf('--') > 0) {
-                I1 = I1.replace('--', '-');
-            }
-            return I1;
         }
 
         function firstPy(l1) {
@@ -189,14 +199,6 @@
             return false;
         }
 
-        function ucfirst(l1) {
-            if (l1.length > 0) {
-                var first = l1.substr(0, 1).toUpperCase();
-                var spare = l1.substr(1, l1.length);
-                return first + spare;
-            }
-        }
-
         function isEn(str) {
             if (/[a-zA-Z]/.test(str)) {
                 return true;
@@ -211,7 +213,7 @@
             return false;
         }
     }
-    ;
+
     var py = {
         "a": "\u554a\u963f\u9515",
         "ai": "\u57c3\u6328\u54ce\u5509\u54c0\u7691\u764c\u853c\u77ee\u827e\u788d\u7231\u9698\u8bf6\u6371\u55f3\u55cc\u5ad2\u7477\u66a7\u7839\u953f\u972d",
