@@ -12,13 +12,13 @@
         returnTemplete: null//自定义返回模板
     };
     $.fn.autoAddto = function (options) {
-        var opts = $.extend({},defaults, options);
+        var opts = $.extend({}, defaults, options);
         return this.each(function () {
             new AutoAddto($(this), opts);
         });
     };
     function AutoAddto(input, options) {
-        var index = -1, search_value = "", dataArray = options.data, autoResult, autoDiv, autoUl;
+        var index = -1, dataArray = options.data, autoResult, autoDiv, autoUl;
         _init();
         _addEvent();
 
@@ -33,7 +33,6 @@
                 "width": input[0].offsetWidth - 2 + "px"
             }).append("<ul class='auto-addto-ul'></ul>");
             autoUl = $(".auto-addto-ul", autoDiv);
-            console.log(options)
             if (options.result) {
                 autoResult = $("<div class='auto-addto-result'></div>");
                 autoDiv.append(autoResult);
@@ -49,22 +48,20 @@
                 autoDiv.hide();
             });
             input.on("keyup", function (event) {
-                if (event.keyCode != 13 && event.keyCode != 38 && event.keyCode != 40) {
-                    var value = input.val();
-                    if (value.replace(/(^\s*)|(\s*$)/g, '') == "") {
-                        autoDiv.hide();
-                        return
-                    }
-                    ( value === "." || value === "\\" || value === "*") && (value = "\\" + value);
-                    search_value = value;
-                    _search(options);
-                }
                 _pressKey(event);
+            });
+            input.on("input", function () {
+                var value = this.value;
+                if (value.replace(/(^\s*)|(\s*$)/g, '') == "") {
+                    autoDiv.hide();
+                    return
+                }
+                ( value === "." || value === "\\" || value === "*") && (value = "\\" + value);
+                _search(value);
             });
         }
 
-        function _search(opts) {
-            console.log(opts);
+        function _search(search_value) {
             var reg = new RegExp("(" + search_value + ")", "i");
             var addto_index = 0, lis = document.createDocumentFragment();
             for (var i = 0; i < dataArray.length; i++) {
@@ -84,9 +81,9 @@
                 }
             }
             autoUl.empty()[0].appendChild(lis);
-            if (opts.result) {
+            if (options.result) {
                 if (addto_index == 0) {
-                    autoResult.html(opts.noReturnText)
+                    autoResult.html(options.noReturnText)
                 } else {
                     autoResult.html("* 找到 " + addto_index + " 条数据 *");
                 }
@@ -98,7 +95,7 @@
 
         function _returnTemplete(dataValue, value) {
             if (options.returnTemplete) {
-                return options.returnTemplete(dataValue, search_value) || 0;
+                return options.returnTemplete(dataValue, value) || 0;
             }
             return dataValue.replace(value, "<span style='color:blue;font-weight: bold'>" + value + "</span>");
         }
