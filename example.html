@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>example</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <!--iOS中隐藏Safari浏览器的UI:Start-->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--iOS中隐藏Safari浏览器的UI:End-->
+    <!--iOS Safari对页面数字禁用拨号功能:Start-->
+    <meta name="format-detection" content="telephone=no"/>
+    <!--iOS Safari对页面数字禁用拨号功能:End-->
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+    <meta name="keywords" content="tt-cc"/>
+    <meta name="description" content="tt-cc"/>
+    <meta http-equiv="Cache-Control" content="no-transform "/>
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="bookmark" href="./favicon.ico">
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/base-min.css">
+    <link href="src/css/AutoAddTo.css" rel="stylesheet" type="text/css"/>
+
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!--<script src="../../panda.js"></script>-->
+    <script src="src/js/AutoAddTo.js"></script>
+</head>
+<body>
+<style type="text/css">
+    body {
+        background-color: #5B8FEF;
+        font-size: 1em;
+        font-family:  Lato, "Microsoft YaHei", sans-serif;
+    }
+
+    .paper-container {
+        margin: 0 auto;
+        width: 80%;
+        max-width: 999px;
+    }
+
+    .paper-wrapper {
+        width: 100%;
+        padding: 20px 60px;
+        background-color: #fff;
+        margin-top: 4em;
+        box-shadow: 0 0 10px 5px #635E5E;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .paper-title {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        font-size: 1.5em;
+        padding: 0.5em 0;
+    }
+
+    .paper-div {
+        width: 100%;
+        position: relative;
+        padding: 0 40px;
+    }
+
+    .papert-pre {
+        margin: -30px 0;
+        padding: 0;
+        color: #666;
+        font-size: 0.8em;
+        line-height: 2em;
+        white-space: pre;
+    }
+</style>
+<div class="paper-container">
+    <div class="paper-wrapper">
+        <div class="paper-title">example1:</div>
+        <div class="paper-div">
+            <input id="autoAddto1" value="keywords..."
+                   onblur="if(this.value==''){this.value='keywords...'}"
+                   onfocus="if(this.value=='keywords...') this.value=''"/>
+        </div>
+        <div class="paper-title">example2:</div>
+        <div class="paper-div">
+            <input id="autoAddto2" value="keywords..."
+                   onblur="if(this.value==''){this.value='keywords...'}"
+                   onfocus="if(this.value=='keywords...') this.value=''"/>
+        </div>
+        <div class="paper-title">example3:</div>
+        <div class="paper-div">
+            <input id="autoAddto3" value="keywords..."
+                   onblur="if(this.value==''){this.value='keywords...'}"
+                   onfocus="if(this.value=='keywords...') this.value=''"/>
+        </div>
+        <div class="paper-title">options:</div>
+        <div class="paper-div papert-pre">
+            data: [],//匹配的数据数组
+            result: true,//是否显示结果数等信息
+            noReturnText: "no result",//没有找到结果时文字
+            returnTemplete: null//自定义返回模板
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //    panda.ready(function (require, exports, module) {
+    //        var $ = require("base.query");
+    //        panda.widget.manager.get(require("widget.AutoAddto"), {
+    //            result: true,//是否显示结果数等信息
+    //            noReturnText: "no result",//没有找到结果时文字
+    //            returnTemplete: null,//自定义返回模板
+    //            target: $(".contact-search"),
+    //            data: ["小伙伴", "xiaohuoban", "abc", "小伙伴2"]
+    //        });
+    //    });
+    $("#autoAddto1").autoAddto({
+        result: true,//是否显示结果数等信息
+        noReturnText: "no result",//没有找到结果时文字
+        returnTemplete: null,//自定义返回模板
+        data: ["小伙伴", "小伙伴2", "xyz", "小小", "test"]
+    });
+    $("#autoAddto2").autoAddto({
+        result: false,//是否显示结果数等信息
+        noReturnText: "sorry, no macth",//没有找到结果时文字
+        returnTemplete: null,//自定义返回模板
+        data: ["xyz", "xxx", "小伙伴1", "小伙伴2", "test"]
+    });
+    $("#autoAddto3").autoAddto({
+        result: true,//是否显示结果数等信息
+        noReturnText: "没有结果",//没有找到结果时文字
+        returnTemplete: function (dataValue, value) {
+            return dataValue + "(" + value + ")";
+        },//自定义返回模板
+        data: ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]
+    });
+</script>
+</body>
+</html>
