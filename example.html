@@ -68,6 +68,17 @@
             padding: 0.5em 0;
         }
 
+        .paper-specil {
+            color: #5B8FEF;
+            font-weight: bold;
+            text-shadow: 1px 1px #efefef,2px 2px #aee2d9;
+        }
+
+        .paper-sep {
+            border-bottom: 3px dashed #5B8FEF;
+            margin: 40px 0 20px;
+        }
+
         .paper-div {
             width: 100%;
             position: relative;
@@ -77,7 +88,7 @@
 <body>
 <div class="paper-container">
     <div class="paper-wrapper">
-        <div class="paper-title">options:</div>
+        <div class="paper-title paper-specil">options:</div>
         <pre>
             <code class="language-javascript">
                 {
@@ -89,21 +100,22 @@
                     returnTemplete: null//自定义返回模板
                 }
             </code>
-       </pre>
-        <div class="paper-title">Method:</div>
+        </pre>
+        <div class="paper-title paper-specil">Method:</div>
         <pre>
             <code class="language-javascript">
                 setData(dataArray);//设置数据
             </code>
-       </pre>
+        </pre>
+        <div class="paper-sep"></div>
 
         <div class="paper-title">example1:</div>
         <div class="paper-div">
-            <input id="autoAddto1" value="keywords..."
+            <input id="demo1" value="keywords..."
                    onblur="if(this.value==''){this.value='keywords...'}"
                    onfocus="if(this.value=='keywords...') this.value=''"/>
         </div>
-       <pre>
+        <pre>
             <code class="language-javascript">
                 {
                     noReturnText: "没有结果",
@@ -114,7 +126,7 @@
 
         <div class="paper-title">example2:</div>
         <div class="paper-div">
-            <input id="autoAddto2" value="keywords..."
+            <input id="demo2" value="keywords..."
                    onblur="if(this.value==''){this.value='keywords...'}"
                    onfocus="if(this.value=='keywords...') this.value=''"/>
         </div>
@@ -129,7 +141,7 @@
 
         <div class="paper-title">example3:</div>
         <div class="paper-div">
-            <input id="autoAddto3" value="keywords..."
+            <input id="demo3" value="keywords..."
                    onblur="if(this.value==''){this.value='keywords...'}"
                    onfocus="if(this.value=='keywords...') this.value=''"/>
         </div>
@@ -146,7 +158,7 @@
 
         <div class="paper-title">example4:</div>
         <div class="paper-div">
-            <input id="autoAddto4" value="keywords..."
+            <input id="demo4" value="keywords..."
                    onblur="if(this.value==''){this.value='keywords...'}"
                    onfocus="if(this.value=='keywords...') this.value=''"/>
         </div>
@@ -173,22 +185,22 @@
     </div>
 </div>
 <script type="text/javascript">
-    $("#autoAddto1").autoAddto({
+    $("#demo1").autoAddto({
         noReturnText: "没有结果",
         data: ["小伙伴", "小伙伴2", "xyz", "小小", "test"]
     });
-    $("#autoAddto2").autoAddto({
+    $("#demo2").autoAddto({
         result: false,
         data: ["xyz", "xxx", "小伙伴1", "小伙伴2", "test"]
     });
-    var AutoAddto = $("#autoAddto3").autoAddto({
+    var AutoAddto = $("#demo3").autoAddto({
         returnTemplete: function (dataValue, value) {
             return dataValue + "(" + value + ")";
         }
     });
     AutoAddto.autoAddto("setData", ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]);
 
-    $("#autoAddto4").autoAddto({
+    $("#demo4").autoAddto({
         sourceUrl: "http://127.0.0.1/test"
     });
 </script>
