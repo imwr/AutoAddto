@@ -90,6 +90,12 @@
                 }
             </code>
        </pre>
+        <div class="paper-title">Method:</div>
+        <pre>
+            <code class="language-javascript">
+                setData(dataArray);//设置数据
+            </code>
+       </pre>
 
         <div class="paper-title">example1:</div>
         <div class="paper-div">
@@ -132,9 +138,9 @@
                 {
                     returnTemplete: function (dataValue, value) {
                         return dataValue + "(" + value + ")";
-                    },
-                    data: ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]
+                    }
                 }
+                Addto.autoAddto("setData", ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]);
             </code>
        </pre>
 
@@ -175,13 +181,12 @@
         result: false,
         data: ["xyz", "xxx", "小伙伴1", "小伙伴2", "test"]
     });
-    var ttt = $("#autoAddto3").autoAddto({
+    var AutoAddto = $("#autoAddto3").autoAddto({
         returnTemplete: function (dataValue, value) {
             return dataValue + "(" + value + ")";
-        },
-        data: ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]
+        }
     });
-    ttt.autoAddto("setData", ["xyz1", "1111", "小伙伴1", "小伙伴2", "test"]);
+    AutoAddto.autoAddto("setData", ["小伙伴", "xiaohuoban", "abc", "小伙伴2", "小伙伴3"]);
 
     $("#autoAddto4").autoAddto({
         sourceUrl: "http://127.0.0.1/test"

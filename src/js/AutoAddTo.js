@@ -5,20 +5,6 @@
  */
 (function ($) {
     "use strict";
-    var defaults = {
-        data: [],//匹配的数据数组
-        sourceUrl: null,//异步请求数据url，不为空时data无效
-        cache: true,//异步请求的数据是否缓存
-        result: true,//是否显示结果数等信息
-        noReturnText: "no result",//没有找到结果时文字
-        returnTemplete: null//自定义返回模板
-    };
-    $.fn.autoAddto = function (options) {
-        var opts = $.extend({}, defaults, options);
-        return this.each(function () {
-            new AutoAddto($(this), opts);
-        });
-    };
     function AutoAddto(input, options) {
         var index = -1, dataArray = options.data, cacheData;
         var autoResult, autoDiv, autoUl;
@@ -39,10 +25,6 @@
                 autoResult = $("<div class='auto-addto-result'></div>");
                 autoDiv.append(autoResult);
             }
-            if (!options.sourceUrl && (!dataArray || dataArray.length == 0)) {
-                console.log("no data");
-                return;
-            }
             _addEvent();
         }
 
@@ -55,7 +37,7 @@
             });
             input.on("input", function () {
                 var value = this.value;
-                if (value.replace(/(^\s*)|(\s*$)/g, '') == "") {
+                if (!value || value.replace(/(^\s*)|(\s*$)/g, '') == "") {
                     autoDiv.hide();
                     return
                 }
@@ -68,7 +50,23 @@
             });
         }
 
+        this.setData = function () {
+            dataArray = arguments;
+            if (dataArray.length > 0) {
+                var value = input.value;
+                if (!value || value.replace(/(^\s*)|(\s*$)/g, '') == "") {
+                    autoDiv.hide();
+                    return
+                }
+                ( value === "." || value === "\\" || value === "*") && (value = "\\" + value);
+                _search(value, dataArray);
+            }
+        };
+
         function _search(search_value, array) {
+            if (!array || array.length == 0) {
+                return;
+            }
             var reg = new RegExp("(" + search_value + ")", "i");
             var addto_index = 0, lis = document.createDocumentFragment();
             if (array && array.length > 0) {
@@ -613,6 +611,28 @@
         "nou": "\u8028",
         "fou": "\u7f36",
         "bia": "\u9adf"
+    };
+
+    var defaults = {
+        data: [],//匹配的数据数组
+        sourceUrl: null,//异步请求数据url，不为空时data无效
+        cache: true,//异步请求的数据是否缓存
+        result: true,//是否显示结果数等信息
+        noReturnText: "no result",//没有找到结果时文字
+        returnTemplete: null//自定义返回模板
+    };
+    $.fn.autoAddto = function (method, args) {
+        return this.each(function () {
+            var ui = $._data(this, "AutoAddto");
+            if (!ui) {
+                var opts = $.extend({}, defaults, typeof method == 'object' && method);
+                ui = new AutoAddto($(this), opts);
+                $._data(this, "AutoAddto", ui);
+            }
+            if (typeof method === "string" && typeof ui[method] == "function") {
+                ui[method].apply(ui, args);
+            }
+        });
     };
 })
 (jQuery);
