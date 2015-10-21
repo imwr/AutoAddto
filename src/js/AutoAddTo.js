@@ -19,9 +19,6 @@
             new AutoAddto($(this), opts);
         });
     };
-    $.fn.autoAddto.setData = function (array) {
-        console.log(array);
-    };
     function AutoAddto(input, options) {
         var index = -1, dataArray = options.data, cacheData;
         var autoResult, autoDiv, autoUl;
