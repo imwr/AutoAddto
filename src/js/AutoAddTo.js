@@ -3,6 +3,7 @@
  * @email mvpjly@163.com
  * @date 2014/10/19
  */
+;
 (function ($) {
     "use strict";
     function AutoAddto(input, options) {
