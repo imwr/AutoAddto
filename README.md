@@ -12,3 +12,5 @@ returnTemplete: null//自定义返回模板
 ```
 ###method###
 + setData(dataArray);//设置数据
+###snapshot###
+![image](snapshot/test.png)
