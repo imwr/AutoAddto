@@ -1,5 +1,5 @@
 # AutoAddto
-Content Assist —— 轻量 输入建议 插件，支持中文拼音、异步请求数据
+Input Assist —— 轻量 输入建议 插件，支持中文拼音、异步请求数据
 
 ###options###
 ```html
