@@ -17,4 +17,4 @@ returnTemplete: null//自定义返回模板
 ![image](snapshot/test.png)
 
 ###demo###
-See [here](http://tt-cc.cn/front-end/item/12-autoaddto)
+See [here](http://tt-cc.cn/front-end/jquery-plugins/autoaddto)
