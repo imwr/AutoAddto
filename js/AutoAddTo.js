@@ -1,8 +1,9 @@
-/**
- * @author wr
+/* =========================================================== *
+ * @site http:tt-cc.cn
  * @email mvpjly@163.com
- * @date 2014/10/19
- */
+ * Copyright 2014 imwr
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ * =========================================================== */
 ;
 (function ($) {
     "use strict";
@@ -10,7 +11,6 @@
         var index = -1, dataArray = options.data, cacheData;
         var autoResult, autoDiv, autoUl;
         _init();
-
         function _init() {
             if (!input || input.length == 0) return;
             input.addClass("auto-addto-input").css("position", "relative");
@@ -63,7 +63,6 @@
                 _search(value, dataArray);
             }
         };
-
         function _search(search_value, array) {
             if (!array || array.length == 0) {
                 return;
@@ -613,7 +612,6 @@
         "fou": "\u7f36",
         "bia": "\u9adf"
     };
-
     var defaults = {
         data: [],//匹配的数据数组
         sourceUrl: null,//异步请求数据url，不为空时data无效
