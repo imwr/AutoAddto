@@ -620,7 +620,8 @@
         noReturnText: "no result",//没有找到结果时文字
         returnTemplete: null//自定义返回模板
     };
-    $.fn.autoAddto = function (method, args) {
+    $.fn.autoAddto = function (method) {
+        var args = arguments;
         return this.each(function () {
             var ui = $._data(this, "AutoAddto");
             if (!ui) {
@@ -629,7 +630,7 @@
                 $._data(this, "AutoAddto", ui);
             }
             if (typeof method === "string" && typeof ui[method] == "function") {
-                ui[method].apply(ui, args);
+                ui[method].apply(ui, Array.prototype.slice.call(args, 1));
             }
         });
     };
