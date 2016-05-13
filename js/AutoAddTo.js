@@ -13,7 +13,7 @@
         _init();
         function _init() {
             if (!input || input.length == 0) return;
-            input.addClass("auto-addto-input").css("position", "relative");
+            input.addClass("auto-addto-input");
             var div = document.createElement('DIV');
             input.parent().append(div);
             autoDiv = $(div).addClass("auto-addto-div").css({
@@ -52,7 +52,7 @@
         }
 
         this.setData = function () {
-            dataArray = arguments;
+            dataArray = arguments[0] || [];
             if (dataArray.length > 0) {
                 var value = input.value;
                 if (!value || value.replace(/(^\s*)|(\s*$)/g, '') == "") {
