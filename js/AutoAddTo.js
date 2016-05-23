@@ -37,7 +37,7 @@
             input.on("blur", function () {
                 setTimeout(function () {
                     autoDiv.hide();
-                }, 100)
+                }, 200)
             });
             input.on("keyup", function (event) {
                 _pressKey(event);
