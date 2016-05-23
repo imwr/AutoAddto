@@ -16,12 +16,12 @@
             input.addClass("auto-addto-input");
             var div = document.createElement('DIV');
             input.parent().append(div);
+            autoUl = $("<ul class='auto-addto-ul'></ul>");
             autoDiv = $(div).addClass("auto-addto-div").css({
                 "left": input[0].offsetLeft + "px",
                 "top": input[0].offsetTop + input[0].offsetHeight - 1 + "px",
                 "width": input[0].offsetWidth - 2 + "px"
-            }).append("<ul class='auto-addto-ul'></ul>");
-            autoUl = $(".auto-addto-ul", autoDiv);
+            }).append(autoUl);
             if (options.result) {
                 autoResult = $("<div class='auto-addto-result'></div>");
                 autoDiv.append(autoResult);
@@ -30,8 +30,14 @@
         }
 
         function _addEvent() {
-            input.on("blur", function (event) {
+            autoUl.on("click", ".auto-addto-item", function (e) {
                 autoDiv.hide();
+                input.val($(e.target).text()).focus();
+            });
+            input.on("blur", function () {
+                setTimeout(function () {
+                    autoDiv.hide();
+                }, 100)
             });
             input.on("keyup", function (event) {
                 _pressKey(event);
@@ -81,7 +87,7 @@
                     if (reg.test(data)) {
                         ischinese && (value = array[i].substring(data.indexOf(value), data.indexOf(value) + value.length));
                         var div = document.createElement("li");
-                        div.className = addto_index % 2 == 0 ? "auto-addto-item item-even" : "auto-addto-item item-odd";
+                        div.className = "auto-addto-item " + (addto_index % 2 == 0 ? "item-even" : "item-odd");
                         div.innerHTML = _returnTemplete(array[i], value);
                         lis.appendChild(div) && addto_index++;
                     }
@@ -107,18 +113,17 @@
                 callback(query, cdata);
                 return;
             }
-            // 替换url后第一个参数的连接符?&或&为?
             var url = (options.sourceUrl + '&param=' + encodeURIComponent(query));
             url = url.replace(/[&?]{1,2}/, '?');
             $.ajax({
                 url: url,
-                dataType: 'jsonp',
-                jsonp: "callback",
+                type: options.type,
                 success: function (data) {
                     callback(query, data);
                     options.cache && _cacheData(query, data);
                 },
-                error: function () {
+                error: function (err) {
+                    console.log(err);
                     callback(query, null);
                 }
             });
@@ -615,6 +620,7 @@
     var defaults = {
         data: [],//匹配的数据数组
         sourceUrl: null,//异步请求数据url，不为空时data无效
+        type: "post",//异步请求方式
         cache: true,//异步请求的数据是否缓存
         result: true,//是否显示结果数等信息
         noReturnText: "no result",//没有找到结果时文字
