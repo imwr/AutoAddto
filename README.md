@@ -18,5 +18,5 @@ returnTemplete: null//自定义返回模板
 
 <!--
 ###demo###
-See [here](http://tt-cc.cn/front-end/jquery-plugins/autoaddto)
+See [here](http://tt-cc.cc/front-end/jquery-plugins/autoaddto)
 -->
